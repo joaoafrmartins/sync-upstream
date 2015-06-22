@@ -1,0 +1,57 @@
+#!/usr/bin/env coffee
+
+require 'shelljs/global'
+
+{ resolve } = require 'path'
+
+cwd = pwd()
+
+if not test "-e", resolve cwd, ".git" then throw new Error "#{__dirname} not in a .git repository"
+
+remotes = exec("git remote -v", { silent: true }).output
+
+if remotes.indexOf("upstream") is -1
+
+	minimist = require 'minimist'
+
+	{ basename } = require 'path'
+
+	args = minimist process.argv.slice 2
+
+	{ domain, protocol, username } = args
+
+	protocol ?= "git"
+
+	separator = ":"
+
+	separator = "/" unless protocol is "git" 
+
+	domain ?= "gitlab.tvgnetwork.local"
+
+	username ?= "client"
+
+	repo = basename cwd
+
+	exec "git remote add upstream #{protocol}@#{domain}#{separator}#{username}/#{repo}.git" 
+
+buff = ""
+
+list = [
+
+  "git fetch upstream",
+
+  "git checkout master",
+
+  "git merge upstream/master"
+
+]
+
+while cmd = list.shift() 
+	
+	child = exec cmd, { async: true }
+	
+	child.stdout.on 'data', (data) -> buff += data.toString()
+
+	child.stderr.on 'data', (data) -> buff += data.toString()
+
+console.log buff

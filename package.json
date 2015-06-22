@@ -1,0 +1,16 @@
+{
+  "name": "sync-upstream",
+  "version": "1.0.0",
+  "description": "",
+  "bin": {
+    "sync-upstream": "bin/sync-upstream"
+  },
+  "main": "bin/sync-upstream",
+  "dependencies": {
+    "minimist": "",
+    "shelljs": ""
+  },
+  "devDependencies": {},
+  "author": "",
+  "license": "MIT"
+}
